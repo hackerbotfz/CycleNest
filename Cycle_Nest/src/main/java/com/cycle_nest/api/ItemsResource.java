@@ -67,43 +67,64 @@ public class ItemsResource {
 
     // GET /api/items/{id}/proximity
     @GET
+    @Path("proximity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getItemsNearUser(
+            @QueryParam("lat") String userLat,
+            @QueryParam("lon") String userLon) {
+
+        if (userLat == null || userLon == null) return Response.status(400).entity("Missing lat/lon").build();
+
+        try {
+            // Get ALL items, then filter manually in Java
+            String query = "SELECT * FROM c WHERE c.availability = true";
+            CosmosPagedIterable<Item> items = container.queryItems(query, new CosmosQueryRequestOptions(), Item.class);
+            List<Item> nearbyItems = new ArrayList<>();
+
+            for (Item item : items) {
+                if (item.getLocation() != null && item.getLocation().contains(",")) {
+                    try {
+                        String[] parts = item.getLocation().split(",");
+                        double km = distanceService.getDistanceKm(userLat, userLon, parts[0].trim(), parts[1].trim());
+                        
+                        // FILTER: Keep items within 20km
+                        if (km >= 0 && km <= 20.0) {
+                            nearbyItems.add(item); 
+                        }
+                    } catch (Exception e) { /* Ignore bad data */ }
+                }
+            }
+            return Response.ok(nearbyItems).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+// allow single item distance search
+    @GET
     @Path("{id}/proximity")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProximity(
+    public Response getSingleItemDistance(
             @PathParam("id") String itemId,
             @QueryParam("userLat") String userLat,
             @QueryParam("userLon") String userLon) {
 
-        if (userLat == null || userLon == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"Missing userLat or userLon\"}").build();
-        }
+        if (userLat == null || userLon == null) return Response.status(400).entity("Missing userLat/userLon").build();
 
         try {
-            // 1. Get Item from DB
+            // 1. Find the specific item by ID
+            // NOTE: We rely on the ID being unique. 
             String query = "SELECT * FROM c WHERE c.id = '" + itemId + "'";
             CosmosPagedIterable<Item> items = container.queryItems(query, new CosmosQueryRequestOptions(), Item.class);
-            
-            if (!items.iterator().hasNext()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Item not found").build();
-            }
+
+            if (!items.iterator().hasNext()) return Response.status(404).entity("Item not found").build();
             Item item = items.iterator().next();
 
-            // 2. Parse Location ("lat,lon")
-            String[] itemLoc = item.getLocation().split(",");
-            if (itemLoc.length != 2) {
-                 return Response.serverError().entity("Invalid item location format in DB").build();
-            }
-            
-            // 3. Calculate Distance
-            double distance = distanceService.getDistanceKm(userLat, userLon, itemLoc[0].trim(), itemLoc[1].trim());
+            // 2. Calculate Distance
+            String[] parts = item.getLocation().split(",");
+            double km = distanceService.getDistanceKm(userLat, userLon, parts[0].trim(), parts[1].trim());
 
-            if (distance < 0) {
-                return Response.status(Response.Status.SERVICE_UNAVAILABLE)
-                        .entity("{\"error\":\"Could not calculate distance\"}").build();
-            }
-
-            return Response.ok("{\"distance_km\": " + distance + "}").build();
+            return Response.ok("{\"distance_km\": " + km + "}").build();
 
         } catch (Exception e) {
             e.printStackTrace();
