@@ -10,14 +10,10 @@ This repository contains the complete implementation of the CycleNest Orchestrat
 CycleNest follows a service-oriented design in which the Orchestrator acts as the central coordination point between clients, persistent storage, message queues, and an external geospatial API. Clients interact with the system exclusively via RESTful endpoints exposed by the Orchestrator.
 
 The system supports using powershell:
-
 * **Browsing and Searching:** Rentable items can be filtered by criteria such as category and price.
 * **Proximity Search:** Users can filter items based on real-time driving distance from their location.
 * **Rental Requests:** Users can submit requests to rent items.
 * **Request Management:** Existing requests can be cancelled.
-
-*Note: The application is not a full booking system. Requests are recorded with statuses, but no payments or confirmed bookings are processed.*
-
 ---
 
 ## Architecture
@@ -48,7 +44,6 @@ The following technologies and tools were used in the actual implementation of C
 * **Messaging:** RabbitMQ (AMQP Protocol)
 * **Testing:** Apache JMeter (QoS Analysis)
 * **Containerisation:** Docker (Multi-stage build)
-
 ---
 
 ## Part A: Orchestrator Service
