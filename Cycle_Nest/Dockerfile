@@ -8,7 +8,7 @@ LABEL maintainer="Faiz Lawan <N1258521@my.ntu.ac.uk>"
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # 4. Copy your .war file
-COPY target/Cycle_Nest.war /usr/local/tomcat/webapps/CycleNestOrchestrator.war
+COPY target/CycleNestOrchestrator.war /usr/local/tomcat/webapps/CycleNestOrchestrator.war
 
 # 5. Expose the port
 EXPOSE 8080
