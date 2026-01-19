@@ -1,7 +1,7 @@
 # course-work.net
 ### Service Centric CourseWork
 
-CycleNest is a service-oriented, RESTful middleware application designed to enable individuals to rent out unused items for short periods of time, encouraging a more sustainable, circular economy. The system is inspired by platforms such as Fat Llama and Media Dog Hire, and has been developed to meet the requirements of a Service-Oriented Architecture (SOA) coursework assessment.
+CycleNest is a service-oriented, RESTful middleware application designed to enable individuals to rent out unused items. The system is inspired by platforms such as Fat Llama and Media Dog Hire, and has been developed to meet the requirements of a Service-Oriented Architecture (SOA) coursework assessment.
 
 This repository contains the complete implementation of the CycleNest Orchestrator, supporting cloud-based data storage, external API integration, Quality of Service (QoS) evaluation, and containerised deployment.
 
@@ -9,7 +9,7 @@ This repository contains the complete implementation of the CycleNest Orchestrat
 
 CycleNest follows a service-oriented design in which the Orchestrator acts as the central coordination point between clients, persistent storage, message queues, and an external geospatial API. Clients interact with the system exclusively via RESTful endpoints exposed by the Orchestrator.
 
-The system supports:
+The system supports using powershell:
 
 * **Browsing and Searching:** Rentable items can be filtered by criteria such as category and price.
 * **Proximity Search:** Users can filter items based on real-time driving distance from their location.
