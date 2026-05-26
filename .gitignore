@@ -1,3 +1,21 @@
-/CycleNest/target/
-/Cycle_nest/target/
-/Cycle_Nest/target/
+# Build
+target/
+*.war
+*.class
+
+# IDE
+.vscode/
+.idea/
+nbproject/private/
+
+# Local env and secrets
+.env
+.env.*
+!.env.example
+
+# Archives
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
